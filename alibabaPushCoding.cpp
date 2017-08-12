@@ -7,7 +7,7 @@
 #include<string>
 using namespace std;
 
-void QueryWordFromLog(string logString,string queryString)
+void queryWordFromLog(string& logString,string& queryString)
 {
 	string frontHalf,lastHalf;	//将关键字符串分为前后两部分
 
@@ -20,13 +20,52 @@ void QueryWordFromLog(string logString,string queryString)
 	int queryLength = queryString.size();
 	int logLength = logString.size();
 
-	int found;
+	string::size_type found,frontFound,lastFound;
 
 	for(int i=0;i<queryLength;i++)
 	{
-		if(i == 0)//只错第一个，留下后半部分
+		if(i == 0)//只错头和尾，留下后半部分
 		{
+			
 			lastHalf = string(queryString,1,queryLength-1);
+			 found= logString.find(lastHalf,1);
+			 cout<<"i==0 found:"<<found;
+			while(found!=string::npos)
+			{
+				cout<<"头可变:"<<found-1<<" "<<found + queryLength-1;
+				found = logString.find(lastHalf,found+1);
+			}
+		}
+		else if(i ==queryLength-1)
+		{
+			lastHalf = string(queryString,0,queryLength-1);
+			 found= logString.rfind(lastHalf,queryLength-1);//从倒数第二个开始查找，留一个位置
+
+			while(found!=string::npos)
+			{
+				cout<<"尾可变："<<found<<" "<<found + queryLength;
+				found = logString.rfind(lastHalf,found-1);
+			}
+
+		}
+		else
+		{
+			frontHalf = string(queryString,0,i);
+			lastHalf = string(queryString,i+1,queryLength-i);
+			
+			frontFound = logString.find(frontHalf,0);
+
+			while(frontFound != string::npos)
+			{
+				lastFound = logString.find(lastHalf,frontFound);
+
+				if((frontFound+i+1)==lastFound)	//找到了，中间一个不一致
+				{
+					cout<<"中间可变:"<<frontFound<<" "<<frontFound+queryLength;
+				}
+
+				frontFound = logString.find(frontHalf,frontFound+1);
+			}
 		}
 	}
 
@@ -37,10 +76,11 @@ void QueryWordFromLog(string logString,string queryString)
 
 int main()
 {
-	string logString,queryString;
-	
-	cin>>logString>>queryString;
+	string logString="abdbcbdbdressa";
+	string queryString="dress";
 
-	QueryWordFromLog(logString,queryString);
+
+	cout<<logString<<" "<<queryString;
+	queryWordFromLog(logString,queryString);
 	return 0;
 }
