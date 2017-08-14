@@ -69,8 +69,10 @@ int main()
 {
 	string inputStr;
 
-	cin>>inputStr;
-
-	characterMove(inputStr);
+	while(cin>>inputStr)
+	{
+		characterMove(inputStr);
+		inputStr.clear();
+	}
 	return 0;
 }
